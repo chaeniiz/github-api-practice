@@ -2,11 +2,20 @@ package com.chaeniiz.githubapipractice
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import com.chaeniiz.githubapipractice.viewholder.StargazerDescriptionViewHolder
+import com.chaeniiz.githubapipractice.viewholder.StargazerNameViewHolder
+import com.chaeniiz.githubapipractice.viewholder.StargazerViewType
 
-class StargazerAdapter(var stargazerList: ArrayList<Stargazer>?, var itemClick: StargazerClickListener) : RecyclerView.Adapter<StargazerAdapter.StargazerViewHolder>() {
+class StargazerAdapter(var stargazerList: ArrayList<Stargazer>?, var itemClick: StargazerClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    override fun getItemViewType(position: Int): Int {
+        return if(position <= stargazerList!!.size / 2) {
+            StargazerViewType.NAME.typeValue
+        } else {
+            StargazerViewType.DESCRIPTION.typeValue
+        }
+    }
+
     override fun getItemCount(): Int {
         return stargazerList!!.size
     }
@@ -15,22 +24,35 @@ class StargazerAdapter(var stargazerList: ArrayList<Stargazer>?, var itemClick: 
         fun getItem(position: Int)
     }
 
-    override fun onBindViewHolder(holder: StargazerViewHolder, position: Int) {
-        holder.bindData(stargazerList, position)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StargazerViewHolder {
-        var view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_stargazer, parent, false)
-        return StargazerViewHolder(view, itemClick)
-    }
-
-    class StargazerViewHolder(itemView: View, var itemClick: StargazerClickListener) : RecyclerView.ViewHolder(itemView) {
-        var textName: TextView = itemView.findViewById(R.id.tvName)
-        fun bindData(stargazerList: ArrayList<Stargazer>?, position: Int) {
-            textName.text = stargazerList!!.get(position).name
-            itemView.setOnClickListener {
-                itemClick.getItem(adapterPosition)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is StargazerNameViewHolder -> {
+                holder.bind(stargazerList, position)
+            }
+            is StargazerDescriptionViewHolder -> {
+                holder.bind(stargazerList, position)
             }
         }
+
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+            when (viewType) {
+                StargazerViewType.NAME.typeValue -> {
+                    StargazerNameViewHolder(
+                            LayoutInflater.from(parent.context).inflate(R.layout.item_stargazer, parent, false)
+                            , itemClick)
+                }
+                StargazerViewType.DESCRIPTION.typeValue -> {
+                    StargazerDescriptionViewHolder(
+                            LayoutInflater.from(parent.context).inflate(R.layout.item_stargazer_description, parent, false)
+                            , itemClick)
+                }
+                else -> {
+                    StargazerDescriptionViewHolder(
+                            LayoutInflater.from(parent.context).inflate(R.layout.item_stargazer_description, parent, false)
+                            , itemClick)
+                }
+            }
+
 }

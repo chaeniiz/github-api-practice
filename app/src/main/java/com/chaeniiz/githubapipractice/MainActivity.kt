@@ -13,6 +13,7 @@ import retrofit2.Response
 
 class MainActivity : AppCompatActivity(), StargazerAdapter.StargazerClickListener {
     var stargazerList: ArrayList<Stargazer> = ArrayList()
+
     override fun getItem(position: Int) {
         val alertDialog = AlertDialog.Builder(this@MainActivity)
         alertDialog.setTitle(stargazerList.get(position).name)
@@ -28,20 +29,23 @@ class MainActivity : AppCompatActivity(), StargazerAdapter.StargazerClickListene
         var recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+
         var apiService: ApiService = ApiClient().getApiClient()!!.create(ApiService::class.java)
 
-        val call: Call<ArrayList<Stargazer>> = apiService.getStargazerName("googlesamples")
+        val call: Call<ArrayList<Stargazer>> = apiService.getStargazer("googlesamples")
 
         call.enqueue(object : Callback<ArrayList<Stargazer>> {
             override fun onResponse(call: Call<ArrayList<Stargazer>>?, response: Response<ArrayList<Stargazer>>?) {
                 stargazerList = response?.body()!!
-                recyclerView.adapter = StargazerAdapter(response.body()!!, this@MainActivity)
+                var temp = response.body()!!
+                temp.addAll(stargazerList)
+
+                recyclerView.adapter = StargazerAdapter(temp, this@MainActivity)
             }
 
             override fun onFailure(call: Call<ArrayList<Stargazer>>?, t: Throwable?) {
             }
         })
-
 
     }
 }

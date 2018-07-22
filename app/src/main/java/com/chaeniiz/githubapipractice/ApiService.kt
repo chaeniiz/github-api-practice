@@ -6,7 +6,7 @@ import retrofit2.http.Path
 
 interface ApiService {
     @GET("/users/{username}/repos")
-
-    fun getStargazerName(
-            @Path("username") username: String): Call<ArrayList<Stargazer>>
+    fun getStargazer(
+            @Path("username") username: String
+    ): Call<ArrayList<Stargazer>>
 }
