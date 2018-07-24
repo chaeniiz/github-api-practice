@@ -9,7 +9,7 @@ import com.chaeniiz.githubapipractice.viewholder.StargazerViewType
 
 class StargazerAdapter(var stargazerList: ArrayList<Stargazer>?, var itemClick: StargazerClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
-        return if(position <= stargazerList!!.size / 2) {
+        return if(position % 2 == 0) {
             StargazerViewType.NAME.typeValue
         } else {
             StargazerViewType.DESCRIPTION.typeValue

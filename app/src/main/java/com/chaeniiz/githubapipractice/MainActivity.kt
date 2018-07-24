@@ -38,7 +38,10 @@ class MainActivity : AppCompatActivity(), StargazerAdapter.StargazerClickListene
             override fun onResponse(call: Call<ArrayList<Stargazer>>?, response: Response<ArrayList<Stargazer>>?) {
                 stargazerList = response?.body()!!
                 var temp = response.body()!!
-                temp.addAll(stargazerList)
+
+                for(i in 0 until stargazerList.size + temp.size step 2) {
+                    stargazerList.add(i, stargazerList.get(i))
+                }
 
                 recyclerView.adapter = StargazerAdapter(temp, this@MainActivity)
             }
